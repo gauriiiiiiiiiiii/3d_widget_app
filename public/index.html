@@ -1,43 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive 3D Widget</title>
+    <style>
+        /* General body styling for the demo page */
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #f0f2f5; /* Light grey background */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Align content to the top */
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px; /* Add some padding around the content */
+            box-sizing: border-box;
+        }
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+        /* Root container for the React app */
+        #root {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Styling for the App component wrapper */
+        .App {
+            text-align: center;
+            padding: 20px;
+            background-color: #ffffff; /* White background for the app section */
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px; /* Max width for the app content */
+        }
+
+        .App-header {
+            margin-bottom: 25px;
+        }
+
+        .App-header h1 {
+            font-size: 2.2em; /* Slightly larger heading */
+            color: #333;
+            font-weight: 600;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px; /* Space between multiple widgets if any */
+        }
+
+        footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        /* Styles for the Interactive3DWidget component */
+        .widget-container {
+            /* Fixed size as per requirement, can be overridden by props */
+            border: 1px solid #d1d1d1; /* Softer border */
+            background-color: #2c3e50; /* Darker background for contrast with object */
+            position: relative; /* For positioning loader, fallback, and controls */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15); /* Enhanced shadow */
+            border-radius: 12px; /* More rounded corners */
+            overflow: hidden; /* Ensures canvas respects border radius */
+        }
+
+        .three-canvas-container {
+            width: 100%;
+            height: 100%;
+            display: block; /* Removes extra space below canvas */
+            border-radius: 11px; /* Match parent's border-radius */
+        }
+
+        .widget-controls {
+            position: absolute;
+            bottom: 12px; /* Slightly more padding from bottom */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly more opaque */
+            padding: 10px 18px; /* More padding */
+            border-radius: 20px; /* Pill shape */
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            gap: 12px; /* More gap */
+            font-size: 0.9em;
+            color: #2c3e50; /* Dark text for contrast */
+            white-space: nowrap; /* Prevent wrapping on small screens */
+        }
+
+        .widget-controls label {
+            margin-right: 6px;
+            font-weight: 500;
+        }
+
+        .widget-controls input[type="range"] {
+            width: 110px; /* Adjusted width */
+            cursor: pointer;
+            accent-color: #3498db; /* Style the slider thumb */
+        }
+        
+        .widget-controls span {
+            min-width: 40px; /* Ensure space for speed value */
+            text-align: right;
+            font-variant-numeric: tabular-nums; /* For consistent number width */
+        }
+
+        /* Fallback message and loading spinner styling */
+        .fallback-message,
+        .loading-spinner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #e9ecef; /* Light, neutral background */
+            color: #495057; /* Darker text for readability */
+            text-align: center;
+            padding: 25px;
+            box-sizing: border-box;
+            z-index: 10; /* Ensure it's above the canvas div */
+            border-radius: 11px; /* Match parent */
+        }
+        
+        .fallback-message p, .loading-spinner p {
+            margin: 8px 0;
+            font-size: 1.05em;
+        }
+
+        .loading-spinner::after {
+            content: "";
+            display: block;
+            width: 35px;
+            height: 35px;
+            margin-top: 18px;
+            border-radius: 50%;
+            border: 5px solid #ced4da; /* Lighter border color */
+            border-top-color: #3498db; /* Accent color for spinner */
+            animation: spin 0.8s linear infinite; /* Faster spin */
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+    </body>
 </html>
