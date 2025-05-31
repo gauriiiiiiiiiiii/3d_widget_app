@@ -6,15 +6,23 @@ This project implements an **interactive 3D cube widget** using **React** and **
 
 ## ✨ Features ✨
 
-🎲 **3D Rotating Object:** Displays a dynamic 3D cube rendered with Three.js.  
-🔄 **Continuous Rotation:** The cube continuously rotates along its Y-axis.  
+🎲 **3D Rotating Object:** Displays a dynamic 3D cube rendered with Three.js
+
+🔄 **Continuous Rotation:** The cube continuously rotates along its Y-axis
+
 🖱️ **Mouse Interaction:** Tilts on its X and Y axes in response to mouse movement over the widget area
+
 📱 **Responsive Container:** Fits responsively in defined container (600x400px) adapting width to viewport 
-💡 **Basic Lighting:** Ambient + directional lighting for depth & realism 🎨  
-❌ **WebGL Fallback:** Displays a friendly message if the browser doesn’t support WebGL 🌐  
-🎛️ **Rotation Speed Control:** A slick slider lets users control rotation speed in real-time 🕹️  
-⏳ **Loading Animation (Bonus):** Minimal spinner shows while the scene initializes ⌛  
-🧭 **Shadows (Bonus):** Cube casts and receives shadows on a ground plane for extra depth 🌫️  
+
+💡 **Basic Lighting:** Ambient + directional lighting for depth & realism 
+
+❌ **WebGL Fallback:** Displays a friendly message if the browser doesn’t support WebGL  
+
+🎛️ **Rotation Speed Control:** A slick slider lets users control rotation speed in real-time 
+
+⏳ **Loading Animation (Bonus):** Minimal spinner shows while the scene initializes 
+
+🧭 **Shadows (Bonus):** Cube casts and receives shadows on a ground plane for extra depth   
 
 ---
 
